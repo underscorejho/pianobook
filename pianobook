@@ -15,44 +15,49 @@ import sys
 import argparse
 
 LIST_DIR_PATH = "/home/jho/code/py/pan_list/"
-songs_path = LIST_DIR_PATH + 'pandora_song_lists/raw.txt'
+songs_path = LIST_DIR_PATH + 'pandora_song_lists/'
 
 station = "none"
 song = "none"
 
 def check_dir():
-  command = "ls " + LIST_DIR_PATH + " | grep ' pandora_song_lists '"
-  if not os.system(command):
+  if os.path.exists(songs_path):
     return
   else:
-    os.system('mkdir pandora_song_lists')
+    os.system('mkdir ' + songs_path)
     return
 
 def new_file():
+  global station
+  print('Creating file for station ' + station)
   f = open(songs_path + station, 'w')
-  f.write('This is a list of all songs played on Pandora station ' + station)
+  f.write('This is a list of all songs played on Pandora station ' + station.replace('_',' ') + '\n')
   f.close()
   return
 
 def check_file():
-  command = "ls " + songs_path + " | grep ' " + station + " '"
-  if not os.system(command):
+  global station
+  if os.path.exists(songs_path + station):
     return 0
   else:
     new_file()
     return
 
 def add_song():
+  global song
   if check_songs():
     return
+  print('Adding ' + song + ' to file ' + station)
   f = open(songs_path + station, 'a')
-  f.write(song)
+  f.write(song+'\n')
   f.close()
   return
 
 def check_songs():
+  global song
   f = open(songs_path + station, 'r')
   if song in f.read():
+    print('This song is on the list')
     return 1
   return 0
   
@@ -64,23 +69,32 @@ def parse_output(filename):
   
  # os.remove(filename)
   
+  cooked = []
+  global station
+  global song
+
   for line in raw:
-    if '|>' not in line[:2]:
+    if '|>' not in line:
       continue
-    if 'Station' in line[4:14]:
-      station = line
+    else:
+      cooked.append(line)
+
+  print(cooked)
+
+  for line in cooked:
+    if 'Station' in line[:20]:
+      lstation = line.split('>')
+      station = lstation[1]
       lsplit = station.split('"')
       station = lsplit[1]
-      for i in station:
-        if i == ' ':
-          i = '_'
+      station = station.replace(' ','_')
+      print(station)
       check_file()
     else:
-      song = line[4:]
+      lsong = line.split('>')
+      song = lsong[1][:-2]
       add_song()
 
-
-  
   return
 
 def pianobar(email, password):
@@ -106,31 +120,32 @@ def quit_pianobar():
   SOMETHING.write('q')
   return
 
-def main(argv):
+def main():
 # check args (-h) help (-e) email (-p) passwd (-o) parse only
   parser = argparse.ArgumentParser(description='Complete, organized song history for pianobar/Pandora')
   parser.add_argument('-e', '--email', default='none', nargs='?', metavar='EMAIL', type=str, help='Pandora Username')
   parser.add_argument('-p', '--passwd', default='none', nargs='?', metavar='PASS', type=str, help='Pandora Password')
   parser.add_argument('-o', '--parse_only', action='count', help='Parse an existing file')
-  parser.add_argument('-f', '--filename', default=songs_path+'raw.txt', metavar='FILE', type=int, help='Alternate file to be used instead of pandora_song_lists/raw.txt')
+  parser.add_argument('-f', '--filename', default=songs_path+'raw.txt', metavar='FILE', type=str, help='Alternate file to be used instead of pandora_song_lists/raw.txt')
   args = parser.parse_args()
   if args.parse_only:
     print(" Parse Only mode on file " + args.filename)
-    parse_output(filename)
+    parse_output(args.filename)
     return
 
-### Working on fixing this...
 # check directory structure
-#  check_dir()
+  check_dir()
 
 ### Working on fixing this...
 # start pianobar
+#  print('Starting pianobar...')
 #  pianobar(email, passwd)
 
 # parse output file 
+  print('Parsing file...')
   parse_output(args.filename)
 
   return
 
 if __name__ == '__main__':
-  main(sys.argv)
+  main()
