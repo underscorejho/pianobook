@@ -2,3 +2,6 @@ Finish current work
 Add download capabilities
 Edit README with usage instructions, dependancies
 Add help (-h) command
+Add parse only (-p) command
+Use a database file instead of a text file
+Use a settings file or environment variables for email, pass, etc
