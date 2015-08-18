@@ -6,10 +6,13 @@
 # create a station file if there is not one
 # list station songs to one file per station
 
+# requires pianobar
+
 # Jared Henry Oviatt
 
 from bs4 import BeautifulSoup
 import os
+import sys
 
 LIST_DIR_PATH = "~/code/py/pan_list/"
 
@@ -58,10 +61,16 @@ def add_song():
 
 def check_sta():
 
-def get_song():
+def parse_output():
 
-def main():
+def main(argv):
+# check for -h option
+# check for -s option for station list # or get station list another way
+
+# start pianobar, pipe to output file
+
+# parse output file 
   return
 
 if __name__ == '__main__':
-  main()
+  main(sys.argv[])
