@@ -40,6 +40,14 @@ def check_file():
     new_file():
     return
 
+def check_songs():
+  songs_path = LIST_DIR_PATH + 'pandora_song_lists/'
+  f = open(songs_path + station, 'r')
+  if song in f.read():
+    return 1
+  return 0
+  
+
 def add_song():
   songs_path = LIST_DIR_PATH + 'pandora_song_lists/'
   f = open(songs_path + station, 'a')
