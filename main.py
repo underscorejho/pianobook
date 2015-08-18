@@ -12,8 +12,10 @@
 
 import os
 import sys
+import argparse
 
 LIST_DIR_PATH = "/home/jho/code/py/pan_list/"
+songs_path = LIST_DIR_PATH + 'pandora_song_lists/raw.txt'
 
 station = "none"
 song = "none"
@@ -27,14 +29,12 @@ def check_dir():
     return
 
 def new_file():
-  songs_path = LIST_DIR_PATH + 'pandora_song_lists/'
   f = open(songs_path + station, 'w')
   f.write('This is a list of all songs played on Pandora station ' + station)
   f.close()
   return
 
 def check_file():
-  songs_path = LIST_DIR_PATH + 'pandora_song_lists/'
   command = "ls " + songs_path + " | grep ' " + station + " '"
   if not os.system(command):
     return 0
@@ -43,7 +43,6 @@ def check_file():
     return
 
 def add_song():
-  songs_path = LIST_DIR_PATH + 'pandora_song_lists/'
   if check_songs():
     return
   f = open(songs_path + station, 'a')
@@ -52,7 +51,6 @@ def add_song():
   return
 
 def check_songs():
-  songs_path = LIST_DIR_PATH + 'pandora_song_lists/'
   f = open(songs_path + station, 'r')
   if song in f.read():
     return 1
@@ -93,7 +91,6 @@ def pianobar(email, password):
   SOMETHING.write('q\n')
 
 def start_pianobar(email, password):
-  songs_path = LIST_DIR_PATH + 'pandora_song_lists/'
   os.system('pianobar >> ' +  songs_path + 'raw.txt')
   # login
   SOMETHING.write(email)
@@ -109,44 +106,29 @@ def quit_pianobar():
   SOMETHING.write('q')
   return
 
-def help_them():
-  return
-  
-def is_parse_only(argv):
-  for arg in argv:
-    if '-p' is arg:
-      if len(argv) != 3:
-        print('ERROR: wrong number of args')
-      if arg is argv[1]:
-        filename = argv[2]
-      else:
-        filename = argv[1] 
-      print(" Parse Only mode on file " + filename)
-      parse_output(filename)
-      return 0
-    return 1
-
 def main(argv):
-# check for -h option
-  for arg in argv:
-    if '-h' in arg:
-      help_them()
-      return
+# check args (-h) help (-e) email (-p) passwd (-o) parse only
+  parser = argparse.ArgumentParser(description='Complete, organized song history for pianobar/Pandora')
+  parser.add_argument('-e', '--email', default='none', nargs='?', metavar='EMAIL', type=str, help='Pandora Username')
+  parser.add_argument('-p', '--passwd', default='none', nargs='?', metavar='PASS', type=str, help='Pandora Password')
+  parser.add_argument('-o', '--parse_only', action='count', help='Parse an existing file')
+  parser.add_argument('-f', '--filename', default=songs_path+'raw.txt', metavar='FILE', type=int, help='Alternate file to be used instead of pandora_song_lists/raw.txt')
+  args = parser.parse_args()
+  if args.parse_only:
+    print(" Parse Only mode on file " + args.filename)
+    parse_output(filename)
+    return
 
 ### Working on fixing this...
 # check directory structure
 #  check_dir()
 
 ### Working on fixing this...
-# check for -p option (parse only)
-#  is_parse_only(argv)
-
-### Working on fixing this...
 # start pianobar
-#  pianobar(argv[1], argv[2])
+#  pianobar(email, passwd)
 
 # parse output file 
-  parse_output(LIST_DIR_PATH + 'pandora_song_lists/raw.txt')
+  parse_output(args.filename)
 
   return
 
