@@ -1,2 +1,4 @@
 Finish current work
 Add download capabilities
+Edit README with usage instructions, dependancies
+Add help (-h) command

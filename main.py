@@ -10,7 +10,6 @@
 
 # Jared Henry Oviatt
 
-from bs4 import BeautifulSoup
 import os
 import sys
 
@@ -40,7 +39,7 @@ def check_file():
   if not os.system(command):
     return 0
   else:
-    new_file():
+    new_file()
     return
 
 def check_songs():
@@ -53,24 +52,48 @@ def check_songs():
 
 def add_song():
   songs_path = LIST_DIR_PATH + 'pandora_song_lists/'
+  if check_songs():
+    return
   f = open(songs_path + station, 'a')
   f.write(song)
   f.close()
   return
 
-
-def check_sta():
+def get_station():
+  return
 
 def parse_output():
+  return
+
+def start_pianobar(email, password):
+  songs_path = LIST_DIR_PATH + 'pandora_song_lists/'
+  os.system('pianobar >> ' +  songs_path + 'raw.txt')
+  # login
+  sys.stdout.write(email+'\n')
+  sys.stdout.write(password)
+  return
+
+def choose_station():
+  songs_path = LIST_DIR_PATH + 'pandora_song_lists/'
+  os.system('cat ' + songs_path + 'raw.txt')
+  return
+
+def quit_pianobar():
+  return
 
 def main(argv):
 # check for -h option
-# check for -s option for station list # or get station list another way
+# # args, etc
 
 # start pianobar, pipe to output file
+  start_pianobar(argv[1], argv[2])
+  choose_station()
+ 
+  close = input('\npress ENTER to quit\n')
+  sys.stdout.write('q\n')
 
 # parse output file 
   return
 
 if __name__ == '__main__':
-  main(sys.argv[])
+  main(sys.argv)
