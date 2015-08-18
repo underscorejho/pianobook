@@ -1,2 +1,8 @@
-# pandora_lists
-List songs played on pandora stations to local directory
+# pianobook
+List all songs played on Pandora (via pianobar) stations to local directory, sorted by station.
+
+### Usage
+    asdlfkjasd;lfk
+    
+### Installation
+    adfasdfalkdsfj;l
