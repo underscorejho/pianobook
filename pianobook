@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
-# a script to collect lists of all songs played by a pandora station
-# use bs4
+# a program to collect lists of all songs played by a pandora station
 # create a directory if there is not one
 # create a station file if there is not one
 # list station songs to one file per station
@@ -14,8 +13,7 @@ import os
 import sys
 import argparse
 
-LIST_DIR_PATH = "/home/jho/code/py/pan_list/"
-songs_path = LIST_DIR_PATH + 'pandora_song_lists/'
+songs_path = ""
 
 station = "none"
 song = "none"
@@ -67,8 +65,6 @@ def parse_output(filename):
   raw = f.readlines()
   f.close
   
- # os.remove(filename)
-  
   cooked = []
   global station
   global song
@@ -78,8 +74,6 @@ def parse_output(filename):
       continue
     else:
       cooked.append(line)
-
-  print(cooked)
 
   for line in cooked:
     if 'Station' in line[:20]:
@@ -120,11 +114,38 @@ def quit_pianobar():
   SOMETHING.write('q')
   return
 
+def parse_config():
+  lconfig = []
+
+  f = open(os.path.expanduser('~/.pianobook'), 'r')
+  lines = f.readlines()
+
+  for line in lines:
+    if '#' in line or '\n' is line:
+      continue
+    else:
+      lconfig.append(line)
+  
+  if len(lconfig) > 3:
+    print("Check your ~/.pianobar config file")
+
+  email = lconfig[0][6:].strip()
+  passwd = lconfig[1][7:].strip()
+  path = lconfig[2][5:].strip()
+  
+  return email, passwd, path
+
 def main():
+
+  global songs_path
+
+# parse config file
+  email, passwd, list_path = parse_config()
+
+  songs_path = list_path + 'pandora_song_lists/'
+
 # check args (-h) help (-e) email (-p) passwd (-o) parse only
   parser = argparse.ArgumentParser(description='Complete, organized song history for pianobar/Pandora')
-  parser.add_argument('-e', '--email', default='none', nargs='?', metavar='EMAIL', type=str, help='Pandora Username')
-  parser.add_argument('-p', '--passwd', default='none', nargs='?', metavar='PASS', type=str, help='Pandora Password')
   parser.add_argument('-o', '--parse_only', action='count', help='Parse an existing file')
   parser.add_argument('-f', '--filename', default=songs_path+'raw.txt', metavar='FILE', type=str, help='Alternate file to be used instead of pandora_song_lists/raw.txt')
   args = parser.parse_args()

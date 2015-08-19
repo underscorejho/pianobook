@@ -1,0 +1,13 @@
+# hashes are comments
+# rename this file to .pianobook and save with your information in your home(~/) directory
+# .pianobook
+# uncomment the following sections with the proper values in place
+
+# email
+# EMAIL=your_email@email.com
+
+# password
+# PASSWD=your_password
+
+# lists path
+# PATH=/full/path/to/your/list/directory/

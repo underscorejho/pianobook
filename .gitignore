@@ -1,3 +1,4 @@
 *.swp
 *.pyc
 pandora_song_lists/
+.pianobook
