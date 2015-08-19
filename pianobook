@@ -65,6 +65,8 @@ def parse_output(filename):
   f = open(filename, 'r')
   raw = f.readlines()
   f.close
+
+  os.remove(filename)
   
   cooked = []
   global station
@@ -92,10 +94,17 @@ def parse_output(filename):
 
   return
 
-def start_pianobar():
-  pb = subprocess.Popen(['pianobar', '>>',  songs_path + 'raw.txt'], -1)
-  # login
-  pb.communicate()
+def start_pianobar(email, passwd):
+  if os.path.exists(songs_path+'raw.txt'):
+    f = open(songs_path+'raw.txt', 'a')
+  else:
+    f = open(songs_path+'raw.txt', 'w')
+  pb = subprocess.Popen(['pianobar'], stdin=subprocess.PIPE, stdout=f)
+  pb.stdin.write(bytes(email, 'utf-8'))
+  pb.stdin.flush()
+  pb.stdin.write(bytes(passwd, 'utf-8'))
+  pb.stdin.flush()
+  f.close()
   return
 
 def parse_config():
@@ -103,26 +112,29 @@ def parse_config():
 
   f = open(os.path.expanduser('~/.pianobook'), 'r')
   lines = f.readlines()
-
+  f.close()
+  
   for line in lines:
     if '#' in line or '\n' is line:
       continue
     else:
       lconfig.append(line)
   
-  if len(lconfig) != 1:
-    print("Check your ~/.pianobar config file")
+  if len(lconfig) != 3:
+    print("Check your ~/.pianobook config file")
 
-  path = lconfig[0][5:].strip()
+  email = lconfig[0][6:].strip()
+  passwd = lconfig[1][7:].strip()
+  path = lconfig[2][5:].strip()
   
-  return path
+  return email, passwd, path
 
 def main():
 
   global songs_path
 
 # parse config file
-  list_path = parse_config()
+  email, passwd, list_path = parse_config()
 
   songs_path = list_path + 'pandora_song_lists/'
 
@@ -142,7 +154,7 @@ def main():
 ### Working on fixing this...
 # start pianobar
   print('Starting pianobar...')
-  start_pianobar()
+  start_pianobar(email, passwd)
 
 # parse output file 
   print('Parsing file...')

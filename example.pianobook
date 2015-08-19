@@ -3,5 +3,11 @@
 # .pianobook
 # uncomment the following and fill in with your info
 
+# email
+# EMAIL=your_email@email.com
+
+# password
+# PASSWD=your_password
+
 # lists path
 # PATH=/full/path/to/your/list/directory/
