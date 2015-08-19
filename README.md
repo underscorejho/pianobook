@@ -3,8 +3,9 @@ Keep lists of all the songs played on Pandora (via pianobar) stations in a local
 
 ### Usage
     
-  * config something something list path
-  * config something something pandora login
+* Update the config file at ~/.pianobook
+* PATH is where you would like the lists to be stored
+* EMAIL and PASSWD are your pandora login credentials
 
 ```
 $ pianobook

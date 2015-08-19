@@ -2,4 +2,3 @@ Start pianobar programatically
 Add download capabilities
 Edit README with usage instructions, dependancies
 Use a database file instead of a text file
-Use a config file for email, pass, path, etc
