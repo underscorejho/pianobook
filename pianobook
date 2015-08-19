@@ -10,6 +10,7 @@
 # Jared Henry Oviatt
 
 import os
+import subprocess
 import sys
 import argparse
 
@@ -22,7 +23,7 @@ def check_dir():
   if os.path.exists(songs_path):
     return
   else:
-    os.system('mkdir ' + songs_path)
+    subprocess.call('mkdir', songs_path)
     return
 
 def new_file():
@@ -91,27 +92,10 @@ def parse_output(filename):
 
   return
 
-def pianobar(email, password):
-  start_pianobar(email, password)
-  choose_station()
- 
-  close = input('\npress ENTER to quit\n')
-  SOMETHING.write('q\n')
-
-def start_pianobar(email, password):
-  os.system('pianobar >> ' +  songs_path + 'raw.txt')
+def start_pianobar():
+  pb = subprocess.Popen(['pianobar', '>>',  songs_path + 'raw.txt'], -1)
   # login
-  SOMETHING.write(email)
-  SOMETHING.write(password)
-  return
-
-def choose_station():
-  songs_path = LIST_DIR_PATH + 'pandora_song_lists/'
-  os.system('cat ' + songs_path + 'raw.txt')
-  return
-
-def quit_pianobar():
-  SOMETHING.write('q')
+  pb.communicate()
   return
 
 def parse_config():
@@ -126,26 +110,24 @@ def parse_config():
     else:
       lconfig.append(line)
   
-  if len(lconfig) > 3:
+  if len(lconfig) != 1:
     print("Check your ~/.pianobar config file")
 
-  email = lconfig[0][6:].strip()
-  passwd = lconfig[1][7:].strip()
-  path = lconfig[2][5:].strip()
+  path = lconfig[0][5:].strip()
   
-  return email, passwd, path
+  return path
 
 def main():
 
   global songs_path
 
 # parse config file
-  email, passwd, list_path = parse_config()
+  list_path = parse_config()
 
   songs_path = list_path + 'pandora_song_lists/'
 
-# check args (-h) help (-e) email (-p) passwd (-o) parse only
-  parser = argparse.ArgumentParser(description='Complete, organized song history for pianobar/Pandora')
+# check args (-h) help (-o) parse only (-f) filename
+  parser = argparse.ArgumentParser(description='Complete, organized song history for Pandora (via pianobar) - Config file is ~/.pianobar - update before using pianobook')
   parser.add_argument('-o', '--parse_only', action='count', help='Parse an existing file')
   parser.add_argument('-f', '--filename', default=songs_path+'raw.txt', metavar='FILE', type=str, help='Alternate file to be used instead of pandora_song_lists/raw.txt')
   args = parser.parse_args()
@@ -159,8 +141,8 @@ def main():
 
 ### Working on fixing this...
 # start pianobar
-#  print('Starting pianobar...')
-#  pianobar(email, passwd)
+  print('Starting pianobar...')
+  start_pianobar()
 
 # parse output file 
   print('Parsing file...')
