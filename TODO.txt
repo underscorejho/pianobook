@@ -1,4 +1,3 @@
-Fix problem of not writing to raw.txt
 Add download capabilities
 Edit README with usage instructions, dependancies
 Use a database file instead of a text file
