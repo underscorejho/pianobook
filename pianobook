@@ -23,7 +23,7 @@ def check_dir():
   if os.path.exists(songs_path):
     return
   else:
-    subprocess.call('mkdir', songs_path)
+    subprocess.call(['mkdir', songs_path])
     return
 
 def new_file():
@@ -66,7 +66,7 @@ def parse_output(filename):
   raw = f.readlines()
   f.close
 
-  #os.remove(filename)
+  os.remove(filename)
   
   cooked = []
   global station
@@ -94,19 +94,31 @@ def parse_output(filename):
 
   return
 
+def choose_station():
+  subprocess.call(['cat', songs_path+'raw.txt'])
+  stat = input('Please enter a station number from the above list: ')
+  return stat
+
 def start_pianobar(email, passwd):
   if os.path.exists(songs_path+'raw.txt'):
     f = open(songs_path+'raw.txt', 'a')
   else:
     f = open(songs_path+'raw.txt', 'w')
   pb = subprocess.Popen(['pianobar'], stdin=subprocess.PIPE, stdout=f)
-  pb.stdin.write(bytes(email, 'utf-8')) ### just skipping over it now...
+  pb.stdin.write(bytes(email+'\n', 'utf-8'))
   pb.stdin.flush()
-  pb.stdin.write(bytes(passwd, 'utf-8'))
+
+  pb.stdin.write(bytes(passwd+'\n', 'utf-8'))
   pb.stdin.flush()
-  pb.stdin.write(bytes('36', 'utf-8'))
+
+  stat = choose_station()
+
+  pb.stdin.write(bytes(stat+'\n', 'utf-8'))
   pb.stdin.flush()
   f.close()
+  
+  wait = input('Press ENTER to quit pianobook')
+
   pb.terminate()
   return
 
